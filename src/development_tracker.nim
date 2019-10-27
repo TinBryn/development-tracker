@@ -1,15 +1,14 @@
-import asynchttpserver, asyncdispatch, strutils, os, htmlgen
+import jester, htmlgen, os, strutils
 
-const
-  portEnv = "PORT"
-  defaultPort = $8080
-  port = parseInt(getEnv(portEnv, defaultPort))
+var settings = newSettings()
 
-var server = newAsyncHttpServer()
+const portEnv = "PORT"
 
-proc cb(req: Request) {.async.} =
-  await req.respond(Http200, h1("Development Tracker"))
+if existsEnv(portEnv):
+  settings.port = Port(parseInt(getEnv(portEnv)))
 
-echo "http://localhost:" & $port
+routes:
+  get "/":
+    resp h1("Development Tracker")
 
-waitFor server.serve(Port(port), cb)
+runForever()
