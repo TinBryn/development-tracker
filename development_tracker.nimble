@@ -11,4 +11,4 @@ bin           = @["development_tracker"]
 
 # Dependencies
 
-requires "nim >= 1.0.0", "jester"
+requires "nim >= 0.10.0", "jester"
