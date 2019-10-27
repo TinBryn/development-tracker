@@ -1,8 +1,14 @@
-import jester, htmlgen, macros
+import jester, htmlgen, os, strutils
 
-expandMacros:
-  routes:
-    get "/":
-      resp h1("Development Tracker")
-    get "/@name":
-      resp h1("Development Tracker for - " & @"name")
+var settings = newSettings()
+
+const portEnv = "PORT"
+
+if existsEnv(portEnv):
+  settings.port = Port(parseInt(getEnv(portEnv)))
+
+routes:
+  get "/":
+    resp h1("Development Tracker")
+
+runForever()
