@@ -1,5 +1,8 @@
-# This is just an example to get you started. A typical binary package
-# uses this file as the main entry point of the application.
+import jester, htmlgen, macros
 
-when isMainModule:
-  echo("Hello, World!")
+expandMacros:
+  routes:
+    get "/":
+      resp h1("Development Tracker")
+    get "/@name":
+      resp h1("Development Tracker for - " & @"name")
