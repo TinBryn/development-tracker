@@ -2,10 +2,11 @@ import jester, htmlgen, os, strutils
 
 var settings = newSettings()
 
-const portEnv = "PORT"
+const
+  portEnv = "PORT"
+  defaultPort = $8080
 
-if existsEnv(portEnv):
-  settings.port = Port(parseInt(getEnv(portEnv)))
+settings.port = Port(parseInt(getEnv(portEnv, defaultPort)))
 
 routes:
   get "/":
