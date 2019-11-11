@@ -1,0 +1,21 @@
+{
+  "addons": [
+
+  ],
+  "buildpacks": [
+    {
+      "url": "https://github.com/DestyNova/heroku-buildpack-nim.git"
+    }
+  ],
+  "env": {
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "name": "development-tracker",
+  "scripts": {
+  },
+  "stack": "heroku-18"
+}
