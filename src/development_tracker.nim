@@ -1,20 +1,24 @@
-import htmlgen, os, strutils, asynchttpserver, asyncdispatch
+import os, strutils, asynchttpserver, asyncdispatch, views/index
 
 const
   portEnv = "PORT"
+  defaultPort = 8000
 
 let port =
   if existsEnv(portEnv):
     getEnv(portEnv).parseInt()
   else:
-    quit("can't find $" & portEnv)
+    echo "can't find $PORT"
+    defaultPort
 
 proc cb(req: Request) {.async.} =
-  case req.url.path:
-  of "/":
-    await req.respond(Http200, h1("No Framework"))
-  else:
-    await req.respond(Http404, "Not found")
+  if req.reqMethod == HttpGet:
+    echo "path: ", req.url.path
+    case req.url.path:
+    of "/":
+      await index(req)
+    else:
+      await req.respond(Http404, "Not found")
 
 var server = newAsyncHttpServer()
 
