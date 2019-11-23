@@ -13,13 +13,13 @@ let port =
 
 proc cb(req: Request) {.async.} =
   if req.reqMethod == HttpGet:
-    echo "path: ", req.url.path
+    echo "GET ", req.url.path
     case req.url.path:
     of "/":
       await index(req)
     else:
       await req.respond(Http404, "Not found")
 
-var server = newAsyncHttpServer()
+let server = newAsyncHttpServer()
 
 waitFor server.serve(Port(port), cb, "")
