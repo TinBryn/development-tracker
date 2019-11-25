@@ -1,7 +1,7 @@
 import tables, asynchttpserver, asyncdispatch
 
 type
-  Handle = proc(req: Request): Future[void]
+  Handle = proc(req: Request): Future[void]{.gcsafe.}
   Router* = object
     routes: Table[string, Handle]
     notFound: Handle

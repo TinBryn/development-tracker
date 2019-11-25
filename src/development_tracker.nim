@@ -1,8 +1,9 @@
-import os, strutils, asynchttpserver, asyncdispatch, views/index
+import os, strutils, asynchttpserver, asyncdispatch, routes/routes
 
 const
   portEnv = "PORT"
   defaultPort = 8000
+  router: Router = makeRouter()
 
 let port =
   if existsEnv(portEnv):
@@ -11,14 +12,9 @@ let port =
     echo "can't find $PORT"
     defaultPort
 
-proc cb(req: Request) {.async.} =
-  if req.reqMethod == HttpGet:
-    echo "GET ", req.url.path
-    case req.url.path:
-    of "/":
-      await index(req)
-    else:
-      await req.respond(Http404, "Not found")
+proc cb(req: Request){.async.} =
+  let handle = router.findHandle($req.url.path)
+  await handle(req)
 
 let server = newAsyncHttpServer()
 
