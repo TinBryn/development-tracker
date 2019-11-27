@@ -3,7 +3,22 @@ import os, strutils, asynchttpserver, asyncdispatch, routes/routes
 const
   portEnv = "PORT"
   defaultPort = 8000
-  router: Router = makeRouter()
+
+type Servy = ref object
+  router: Router
+  callback: proc(req: Request): Future[void] {.gcsafe.}
+
+proc newServy(): Servy =
+  new result
+  let router = makeRouter()
+  result.router = router
+  result.callback = proc(req: Request) {.async.} =
+    let handle = router.findHandle($req.url.path)
+    await handle(req)
+
+proc run(servy: Servy, port: Port){.noReturn.} =
+  let server = newAsyncHttpServer()
+  waitFor server.serve(port, servy.callback, "")
 
 let port =
   if existsEnv(portEnv):
@@ -12,10 +27,6 @@ let port =
     echo "can't find $PORT"
     defaultPort
 
-proc cb(req: Request){.async.} =
-  let handle = router.findHandle($req.url.path)
-  await handle(req)
+let servy = newServy()
 
-let server = newAsyncHttpServer()
-
-waitFor server.serve(Port(port), cb, "")
+servy.run(Port(port))

@@ -2,11 +2,13 @@ import tables, asynchttpserver, asyncdispatch
 
 type
   Handle = proc(req: Request): Future[void]{.gcsafe.}
-  Router* = object
+  RouterObj = object
     routes: Table[string, Handle]
     notFound: Handle
+  
+  Router* = ref RouterObj
 
-proc initRouter*(notFound: Handle): Router =
+proc initRouter*(notFound: Handle): owned Router =
   result = Router(
     routes: initTable[string, Handle](),
     notFound: notFound)
